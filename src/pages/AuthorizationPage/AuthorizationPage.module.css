@@ -1,0 +1,55 @@
+.input-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.authorization-wrapper {
+    display: flex;
+    width: 100%;
+    min-height: 100%;
+    align-items: stretch;
+    overflow: hidden;
+}
+
+.login-section, .register-section {
+    flex: 1;
+    position: relative;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.login-curtain, .register-curtain {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    transition: transform .3s linear .3s;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 900;
+    font-size: 40px;
+    color: #fff
+}
+
+.login-curtain {
+    background: rgb(255, 0, 0);
+    transform: translateX(-100%);
+}
+.register-curtain {
+    background: rgb(0, 89, 255);
+    transform: translateX(100%);
+}
+
+.login-curtain__active, .register-curtain__active {
+    transform: translateX(0%) !important;
+
+    transition: transform .3s linear;
+}
