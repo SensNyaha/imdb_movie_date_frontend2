@@ -77,6 +77,9 @@ const userSlice = createSlice({
 	reducers: {
 		ADD_USERINFO_FROM_LOCALSTORAGE(state, action: {payload: AuthResponseUser}) {
 			state.userInfo = action.payload;
+		},
+		REMOVE_USERINFO(state) {
+			state.userInfo = null;
 		}
 	},
 	extraReducers: (builder) => {
@@ -105,9 +108,21 @@ const userSlice = createSlice({
 			.addCase(registerUser.rejected, (state, action) => {
 				state.status = 'failed';
 				state.error = (action as AuthResponse).payload.message;
+			})
+			// get userinfo by access token
+			.addCase(getUserInfoByAccessToken.pending, (state) => {
+				state.status = 'loading';
+				state.error = null;
+			})
+			.addCase(getUserInfoByAccessToken.fulfilled, (state) => {
+				state.status = 'succeeded';
+			})
+			.addCase(getUserInfoByAccessToken.rejected, (state, action) => {
+				state.status = 'failed';
+				state.error = (action as AuthResponse).payload.message;
 			});
 	}
 });
 
-export const {ADD_USERINFO_FROM_LOCALSTORAGE} = userSlice.actions;
+export const {ADD_USERINFO_FROM_LOCALSTORAGE, REMOVE_USERINFO} = userSlice.actions;
 export default userSlice.reducer;

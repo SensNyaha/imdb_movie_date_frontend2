@@ -8,6 +8,7 @@ import ErrorPage from './pages/ErrorPage/ErrorPage.tsx';
 import Base from './Layouts/Base.tsx';
 import AuthorizationPage from './pages/AuthorizationPage/AuthorizationPage.tsx';
 import RegistrationConfirmPage from './pages/RegistrationConfirmPage/RegistrationConfirmPage.tsx';
+import AppPage from './pages/AppPage/AppPage.tsx';
 
 const router = createBrowserRouter([
 	{
@@ -17,6 +18,14 @@ const router = createBrowserRouter([
 			{
 				path: '/',
 				element: <AuthorizationPage/>
+			},
+			{
+				path: '/app',
+				element: <AppPage/>
+			},
+			{
+				path: '/me',
+				element: <AppPage/>
 			}
 		]
 	},

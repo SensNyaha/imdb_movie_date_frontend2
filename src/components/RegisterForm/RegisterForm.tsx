@@ -22,10 +22,8 @@ function RegisterForm(props: RegisterFormProps) {
 		dispatch(registerUser(data))
 			.then((data) => {
 				if (!data.payload.success) throw data.payload;
-				alert(data.payload.message);
 			})
 			.catch((error) => {
-				alert(error.message || error);
 			});
 	};
 	return (

@@ -21,11 +21,9 @@ function LoginForm(props: LoginFormProps) {
 		dispatch(loginUser(data))
 			.then((data) => {
 				if (!data.payload.success) throw data.payload;
-				alert(data.payload.data.accessToken);
 			})
 			.catch((error) => {
 				console.log(error);
-				alert(error.message || error);
 			});
 	};
 	return (
