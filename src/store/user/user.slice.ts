@@ -1,6 +1,13 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import axios, {AxiosError} from 'axios';
-import {IUserSliceState, LoginCredits, AuthResponse, RegisterCredits, AuthResponseUser} from './user.types.ts';
+import {
+	IUserSliceState,
+	LoginCredits,
+	AuthResponse,
+	RegisterCredits,
+	AuthResponseUser,
+	AccessTokenCredits
+} from './user.types.ts';
 
 const initialState: IUserSliceState = {
 	userInfo: null,
@@ -48,7 +55,7 @@ export const registerUser = createAsyncThunk(
 
 export const getUserInfoByAccessToken = createAsyncThunk(
 	'user/getUserInfoByAccessToken',
-	async (credits: {accessToken: string | null}, {rejectWithValue}) => {
+	async (credits: AccessTokenCredits, {rejectWithValue}) => {
 		try {
 			const backendAddress = import.meta.env.VITE_BACKEND_URL;
 			const response = await axios.get(`${backendAddress}/users/my`, {
@@ -59,8 +66,31 @@ export const getUserInfoByAccessToken = createAsyncThunk(
 			return response.data;
 		}
 		catch (error) {
-			localStorage.removeItem('accessToken');
+			// localStorage.removeItem('accessToken');
 
+			if (error instanceof AxiosError)
+				return rejectWithValue({
+					message: error.response?.data?.message || error.message
+				});
+
+			return (error as Error).message;
+		}
+	}
+);
+
+export const logoutUser = createAsyncThunk(
+	'user/logoutUser',
+	async (credits: AccessTokenCredits, {rejectWithValue}) => {
+		try {
+			const backendAddress = import.meta.env.VITE_BACKEND_URL;
+			const response = await axios.get(`${backendAddress}/users/my`, {
+				headers: {
+					Authorization: `Bearer ${credits.accessToken}`
+				}
+			});
+			localStorage.removeItem('accessToken');
+			return response.data;
+		} catch (error) {
 			if (error instanceof AxiosError)
 				return rejectWithValue({
 					message: error.response?.data?.message || error.message
@@ -90,7 +120,7 @@ const userSlice = createSlice({
 				state.error = null;
 			})
 			.addCase(loginUser.fulfilled, (state, action: AuthResponse) => {
-				state.status = 'succeeded';
+				state.status = action.payload.message || 'succeeded';
 				state.userInfo = action.payload.data || null;
 			})
 			.addCase(loginUser.rejected, (state, action) => {
@@ -102,8 +132,8 @@ const userSlice = createSlice({
 				state.status = 'loading';
 				state.error = null;
 			})
-			.addCase(registerUser.fulfilled, (state) => {
-				state.status = 'succeeded';
+			.addCase(registerUser.fulfilled, (state, action) => {
+				state.status = action.payload.message || 'succeeded';
 			})
 			.addCase(registerUser.rejected, (state, action) => {
 				state.status = 'failed';
@@ -114,10 +144,23 @@ const userSlice = createSlice({
 				state.status = 'loading';
 				state.error = null;
 			})
-			.addCase(getUserInfoByAccessToken.fulfilled, (state) => {
-				state.status = 'succeeded';
+			.addCase(getUserInfoByAccessToken.fulfilled, (state, action) => {
+				state.status = action.payload.message || 'succeeded';
 			})
 			.addCase(getUserInfoByAccessToken.rejected, (state, action) => {
+				state.status = 'failed';
+				state.error = (action as AuthResponse).payload.message;
+			})
+			// logout user
+			.addCase(logoutUser.pending, (state) => {
+				state.status = 'loading';
+				state.error = null;
+			})
+			.addCase(logoutUser.fulfilled, (state, action) => {
+				state.status = action.payload.message || 'succeeded';
+				state.userInfo = null;
+			})
+			.addCase(logoutUser.rejected, (state, action) => {
 				state.status = 'failed';
 				state.error = (action as AuthResponse).payload.message;
 			});

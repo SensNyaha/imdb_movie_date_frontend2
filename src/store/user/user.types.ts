@@ -1,6 +1,6 @@
 export interface IUserSliceState {
     userInfo: AuthResponseUser | null,
-    status: 'idle' | 'loading' | 'succeeded' | 'failed',
+    status: 'idle' | 'loading' | 'succeeded' | 'failed' | string,
     error: null | string;
 }
 export interface LoginCredits {
@@ -33,4 +33,8 @@ export interface RegisterCredits {
     username: string;
     email: string;
     password: string;
+}
+
+export interface AccessTokenCredits {
+    accessToken: string | null;
 }

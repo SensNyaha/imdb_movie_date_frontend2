@@ -48,9 +48,12 @@ function Base() {
 			if (location.pathname === '/') navigate('/app');
 		}
 		else {
-			const data = await dispatch(getUserInfoByAccessToken({accessToken: localStorage.getItem('accessToken')}));
+			if (localStorage.getItem('accessToken') !== null) {
+				const data = await dispatch(getUserInfoByAccessToken({accessToken: localStorage.getItem('accessToken')}));
 
-			if (data.payload && data.payload.success) return;
+				if (data.payload && data.payload.success) return;
+			}
+
 
 			localStorage.removeItem('accessToken');
 			if (location.pathname !== '/') navigate('/');

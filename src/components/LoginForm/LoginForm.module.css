@@ -2,4 +2,9 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+
+    transition: all 0.5s;
+}
+.input-wrapper__hide {
+    transform: translateX(-100vw);
 }

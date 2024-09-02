@@ -23,7 +23,7 @@ function RegisterForm(props: RegisterFormProps) {
 			.then((data) => {
 				if (!data.payload.success) throw data.payload;
 			})
-			.catch((error) => {
+			.catch(() => {
 			});
 	};
 	return (
