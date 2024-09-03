@@ -6,7 +6,7 @@ import {
 	AuthResponse,
 	RegisterCredits,
 	AuthResponseUser,
-	AccessTokenCredits
+	AccessTokenCredits, RequestResetPasswordCredits, SetPasswordCredits
 } from './user.types.ts';
 
 const initialState: IUserSliceState = {
@@ -101,6 +101,66 @@ export const logoutUser = createAsyncThunk(
 	}
 );
 
+export const resendEmailVerification = createAsyncThunk(
+	'user/resendEmailVerification',
+	async (credits: AccessTokenCredits, {rejectWithValue}) => {
+		try {
+			const backendAddress = import.meta.env.VITE_BACKEND_URL;
+			const response = await axios.post(`${backendAddress}/users/resend`, null, {
+				headers: {
+					Authorization: `Bearer ${credits.accessToken}`
+				}
+			});
+			return response.data;
+		} catch (error) {
+			if (error instanceof AxiosError)
+				return rejectWithValue({
+					message: error.response?.data?.message || error.message
+				});
+
+			return (error as Error).message;
+		}
+	}
+);
+
+export const requestResetPassword = createAsyncThunk(
+	'user/requestResetPassword',
+	async (credits: RequestResetPasswordCredits, {rejectWithValue}) => {
+		try {
+			const backendAddress = import.meta.env.VITE_BACKEND_URL;
+			const response = await axios.post(`${backendAddress}/users/reset-password/email`, credits);
+			return response.data;
+		}
+		catch (error) {
+			if (error instanceof AxiosError)
+				return rejectWithValue({
+					message: error.response?.data?.message || error.message
+				});
+
+			return (error as Error).message;
+		}
+	}
+);
+
+export const setNewPassword = createAsyncThunk(
+	'user/setNewPassword',
+	async (credits: SetPasswordCredits, {rejectWithValue}) => {
+		try {
+			const backendAddress = import.meta.env.VITE_BACKEND_URL;
+			const response = await axios.post(`${backendAddress}/users/reset-password/set`, credits);
+			return response.data;
+		}
+		catch (error) {
+			if (error instanceof AxiosError)
+				return rejectWithValue({
+					message: error.response?.data?.message || error.message
+				});
+
+			return (error as Error).message;
+		}
+	}
+);
+
 const userSlice = createSlice({
 	name: 'user',
 	initialState,
@@ -161,6 +221,42 @@ const userSlice = createSlice({
 				state.userInfo = null;
 			})
 			.addCase(logoutUser.rejected, (state, action) => {
+				state.status = 'failed';
+				state.error = (action as AuthResponse).payload.message;
+			})
+			// resend email verification
+			.addCase(resendEmailVerification.pending, (state) => {
+				state.status = 'loading';
+				state.error = null;
+			})
+			.addCase(resendEmailVerification.fulfilled, (state, action) => {
+				state.status = action.payload.message || 'succeeded';
+			})
+			.addCase(resendEmailVerification.rejected, (state, action) => {
+				state.status = 'failed';
+				state.error = (action as AuthResponse).payload.message;
+			})
+			// request reset password
+			.addCase(requestResetPassword.pending, (state) => {
+				state.status = 'loading';
+				state.error = null;
+			})
+			.addCase(requestResetPassword.fulfilled, (state, action) => {
+				state.status = action.payload.message || 'succeeded';
+			})
+			.addCase(requestResetPassword.rejected, (state, action) => {
+				state.status = 'failed';
+				state.error = (action as AuthResponse).payload.message;
+			})
+			// set new password
+			.addCase(setNewPassword.pending, (state) => {
+				state.status = 'loading';
+				state.error = null;
+			})
+			.addCase(setNewPassword.fulfilled, (state, action) => {
+				state.status = action.payload.message || 'succeeded';
+			})
+			.addCase(setNewPassword.rejected, (state, action) => {
 				state.status = 'failed';
 				state.error = (action as AuthResponse).payload.message;
 			});

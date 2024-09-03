@@ -1,11 +1,11 @@
 import {Link} from 'react-router-dom';
 import {useDispatch, useSelector} from 'react-redux';
-import {logoutUser} from '../../store/user/user.slice.ts';
+import {logoutUser, resendEmailVerification} from '../../store/user/user.slice.ts';
 import {DispatchType, RootState} from '../../store/store.ts';
 
 function AppPage() {
 	const dispatch = useDispatch<DispatchType>();
-	const accessToken = useSelector((state: RootState) => state?.user?.userInfo?.accessToken);
+	const {accessToken, emailVerified} = useSelector((state: RootState) => state?.user?.userInfo || {});
 
 	return (
 		<>
@@ -21,7 +21,22 @@ function AppPage() {
 							console.log(error);
 						});
 			}}>LOGOUT</button>
-		    <div>APPLICATION</div>
+			{
+				emailVerified ?
+					<div>EMAIL VERIFIED!!!</div>
+					:
+					<button onClick={() => {
+						dispatch(resendEmailVerification({accessToken}))
+							.then((data) => {
+								console.log(data);
+							})
+							.catch((error) => {
+								console.log(error);
+							});
+					}
+					}>RESEND EMAIL VERIFICATION</button>
+			}
+			<div>APPLICATION</div>
 		</>
 	);
 }

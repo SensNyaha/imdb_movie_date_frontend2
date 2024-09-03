@@ -26,7 +26,8 @@ function RegistrationConfirmPage() {
         
 		confirmRegisterFunc()
 			.then(data => {
-				setStatus(data.message);
+				if (data.message) setStatus(data.message);
+				else setStatus('Some error!');
 				setTimeout(() => navigate('/'), 3000);
 			});
 	}, []);

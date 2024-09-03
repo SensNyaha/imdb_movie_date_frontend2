@@ -9,6 +9,7 @@ import Base from './Layouts/Base.tsx';
 import AuthorizationPage from './pages/AuthorizationPage/AuthorizationPage.tsx';
 import RegistrationConfirmPage from './pages/RegistrationConfirmPage/RegistrationConfirmPage.tsx';
 import AppPage from './pages/AppPage/AppPage.tsx';
+import ResetPasswordConfirmPage from './pages/ResetPasswordConfirmPage/ResetPasswordConfirmPage.tsx';
 
 const router = createBrowserRouter([
 	{
@@ -32,6 +33,10 @@ const router = createBrowserRouter([
 	{
 		path: '/register/confirm',
 		element: <RegistrationConfirmPage/>
+	},
+	{
+		path: '/reset-password/confirm',
+		element: <ResetPasswordConfirmPage/>
 	},
 	{
 		path: '*',

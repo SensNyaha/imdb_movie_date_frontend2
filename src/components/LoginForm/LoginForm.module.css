@@ -5,6 +5,13 @@
 
     transition: all 0.5s;
 }
-.input-wrapper__hide {
-    transform: translateX(-100vw);
+.login-form {
+    transition: opacity 0.5s, max-height 0.5s;
+    opacity: 1;
+    max-height: 500px;
+    overflow: hidden;
+}
+.login-form__hide {
+    opacity: 0;
+    transition: opacity 0.5s, max-height 0.2s;
 }

@@ -8,7 +8,7 @@ import RegisterForm from '../../components/RegisterForm/RegisterForm.tsx';
 
 
 function AuthorizationPage() {
-	const [hide, setHide] = useState<'login' | 'register'>('register');
+	const [hide, setHide] = useState<'login' | 'register'>('login');
 
 	return (
 		<div className={cn(styles['authorization-wrapper'])}>

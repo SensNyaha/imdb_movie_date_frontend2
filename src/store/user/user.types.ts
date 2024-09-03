@@ -3,8 +3,14 @@ export interface IUserSliceState {
     status: 'idle' | 'loading' | 'succeeded' | 'failed' | string,
     error: null | string;
 }
-export interface LoginCredits {
+export interface RequestResetPasswordCredits {
     email: string;
+}
+export interface SetPasswordCredits {
+    password: string;
+    resetToken: string
+}
+export interface LoginCredits extends RequestResetPasswordCredits {
     password: string;
 }
 export interface AuthResponse {
@@ -22,19 +28,17 @@ export interface AuthResponseUser {
     avatar?: string;
     isSuperAdmin?: boolean;
     country?: string;
-    accessToken?: string | null;
+    accessToken?: string | null | undefined;
     recoveryToken?: string | null;
     emailVerified?: boolean;
     fullname?: string;
     lastGeneratedEmailConfirmation?: string;
 }
 
-export interface RegisterCredits {
+export interface RegisterCredits extends LoginCredits{
     username: string;
-    email: string;
-    password: string;
 }
 
 export interface AccessTokenCredits {
-    accessToken: string | null;
+    accessToken: string | null | undefined;
 }
